@@ -1,5 +1,8 @@
 const http = require('http');
 const config = require('../common/config');
+const {
+  responseCode: { NOT_FOUND },
+} = require('../common/statusCodes');
 
 module.exports = class Application {
   constructor(port) {
@@ -12,16 +15,28 @@ module.exports = class Application {
     this.middlewares.push(middleware);
   }
 
-  _json = (res) => {
-    res.json = (data, statusCode = 200) => {
-      res.writeHead(statusCode, {
+  static _addResponceMethods(res) {
+    res.json = (data, statusCode) => {
+      const status = statusCode ?? res.statusCode;
+      res.writeHead(status, {
         'Content-type': 'application/json',
       });
       res.end(JSON.stringify(data));
+      return res;
     };
-  };
 
-  _parseUrl(req) {
+    res.status = (status) => {
+      res.statusCode = status;
+      return res;
+    };
+
+    res.send = (data) => {
+      res.setHeader('Content-Type', 'text/plain');
+      res.end(JSON.stringify(data));
+    };
+  }
+
+  static _parseUrl(req) {
     const parsedUrl = new URL(req.url, `http://${req.headers.host}`);
     if (config?.DEBUG) {
       console.log('parsedUrl', parsedUrl);
@@ -31,8 +46,8 @@ module.exports = class Application {
 
   _createServer() {
     return http.createServer((req, res) => {
-      this._parseUrl(req);
-      this._json(res);
+      Application._parseUrl(req);
+      Application._addResponceMethods(res);
       let body = '';
       let isRunNext = true;
       const next = () => {
@@ -66,7 +81,8 @@ module.exports = class Application {
           midCount++;
         }
         if (isRunNext) {
-          res.statusCode = 404;
+          res.statusCode = NOT_FOUND;
+          res.setHeader('Content-Type', 'text/plain');
           res.end('human friendly: No endpoints!   ¯\\_(ツ)_/¯');
         }
       });
@@ -80,7 +96,8 @@ module.exports = class Application {
   setErrorHandler(cb) {
     this.errorHandler = cb;
   }
-  static bodyParser = (req, res, next) => {
+
+  static bodyParser(req, res, next) {
     if (config?.DEBUG) {
       console.log('bodyPArser');
       console.log('req.body', req.body);
@@ -95,5 +112,5 @@ module.exports = class Application {
       console.log('req.body', req.body);
     }
     next();
-  };
+  }
 };

@@ -1,55 +1,48 @@
-const router = require('express').Router();
+const Router = require('../../OrientExpress/Router');
 const User = require('./user.model');
 const usersService = require('./user.service');
+const {
+  responseCode: { OK, CREATED, NO_CONTENT },
+} = require('../../common/statusCodes');
 
-router.route('/').get(async (req, res) => {
+const userRouter = new Router();
+
+userRouter.get('/users', async (req, res) => {
   const users = await usersService.getAll();
-  res.json(users.map(User.toResponse));
+  res.json(users.map(User.toResponse), OK);
 });
 
-router.route('/:id').get(async (req, res) => {
-  try {
-    const user = await usersService.getById(req.params.id);
-    res.json(User.toResponse(user));
-  } catch (error) {
-    res.status(404).send('User not found');
-  }
+userRouter.get('/users/:id', async (req, res) => {
+  const user = await usersService.getById(req.params.id);
+  res.json(User.toResponse(user), OK);
 });
 
-router.route('/').post(async (req, res) => {
+userRouter.post('/users', async (req, res) => {
   const user = await usersService.create(
     new User({
       name: req.body.name,
       login: req.body.login,
-      password: req.body.password
+      password: req.body.password,
     })
   );
-  res.status(201).json(User.toResponse(user));
+  res.json(User.toResponse(user), CREATED);
 });
 
-router.route('/:id').put(async (req, res) => {
-  try {
-    const user = await usersService.update(
-      new User({
-        name: req.body.name,
-        login: req.body.login,
-        password: req.body.password
-      }),
-      req.params.id
-    );
-    res.json(User.toResponse(user));
-  } catch (error) {
-    res.status(404).send('User not found');
-  }
+userRouter.put('/users/:id', async (req, res) => {
+  const user = await usersService.update(
+    new User({
+      name: req.body.name,
+      login: req.body.login,
+      password: req.body.password,
+    }),
+    req.params.id
+  );
+  res.json(User.toResponse(user), OK);
 });
 
-router.route('/:id').delete(async (req, res) => {
-  try {
-    await usersService.deleteById(req.params.id);
-    res.status(204).send('The user has been deleted');
-  } catch (error) {
-    res.status(404).send('User not found');
-  }
+userRouter.delete('/users/:id', async (req, res) => {
+  await usersService.deleteById(req.params.id);
+  res.status(NO_CONTENT).end();
 });
 
-module.exports = router;
+module.exports = userRouter;

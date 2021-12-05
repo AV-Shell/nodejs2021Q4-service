@@ -1,17 +1,18 @@
-const router = require('express').Router({ mergeParams: true });
 const Task = require('./task.model');
 const tasksService = require('./task.service');
+const Router = require('../../OrientExpress/Router');
+const {
+  responseCode: { OK, CREATED, NO_CONTENT },
+} = require('../../common/statusCodes');
 
-router.route('/').get(async (req, res) => {
-  try {
-    const tasks = await tasksService.getAllByBoardId(req.params.boardId);
-    res.json(tasks.map(Task.toResponse));
-  } catch (error) {
-    res.status(404).send('Board not found');
-  }
+const taskdRouter = new Router();
+
+taskdRouter.get('/boards/:boardId/tasks', async (req, res) => {
+  const tasks = await tasksService.getAllByBoardId(req.params.boardId);
+  res.json(tasks.map(Task.toResponse), OK);
 });
 
-router.route('/').post(async (req, res) => {
+taskdRouter.post('/boards/:boardId/tasks', async (req, res) => {
   const task = await tasksService.create(
     new Task({
       title: req.body.title,
@@ -19,51 +20,39 @@ router.route('/').post(async (req, res) => {
       description: req.body.description,
       userId: req.body.userId,
       boardId: req.params.boardId,
-      columnId: req.body.columnId
+      columnId: req.body.columnId,
     })
   );
-  res.status(201).json(Task.toResponse(task));
+  res.json(Task.toResponse(task), CREATED);
 });
 
-router.route('/:taskId').get(async (req, res) => {
-  try {
-    const task = await tasksService.getById(
-      req.params.boardId,
-      req.params.taskId
-    );
-    res.json(Task.toResponse(task));
-  } catch (error) {
-    res.status(404).send('Board not found');
-  }
+taskdRouter.get('/boards/:boardId/tasks/:taskId', async (req, res) => {
+  const task = await tasksService.getById(
+    req.params.boardId,
+    req.params.taskId
+  );
+  res.json(Task.toResponse(task), OK);
 });
 
-router.route('/:taskId').put(async (req, res) => {
-  try {
-    const task = await tasksService.update(
-      new Task({
-        title: req.body.title,
-        order: req.body.order,
-        description: req.body.description,
-        userId: req.body.userId,
-        boardId: req.params.boardId,
-        columnId: req.body.columnId
-      }),
-      req.params.boardId,
-      req.params.taskId
-    );
-    res.json(Task.toResponse(task));
-  } catch (error) {
-    res.status(404).send('Task not found');
-  }
+taskdRouter.put('/boards/:boardId/tasks/:taskId', async (req, res) => {
+  const task = await tasksService.update(
+    new Task({
+      title: req.body.title,
+      order: req.body.order,
+      description: req.body.description,
+      userId: req.body.userId,
+      boardId: req.params.boardId,
+      columnId: req.body.columnId,
+    }),
+    req.params.boardId,
+    req.params.taskId
+  );
+  res.json(Task.toResponse(task), OK);
 });
 
-router.route('/:taskId').delete(async (req, res) => {
-  try {
-    await tasksService.deleteById(req.params.boardId, req.params.taskId);
-    res.status(204).send('The task has been deleted');
-  } catch (error) {
-    res.status(404).send('Board not found');
-  }
+taskdRouter.delete('/boards/:boardId/tasks/:taskId', async (req, res) => {
+  await tasksService.deleteById(req.params.boardId, req.params.taskId);
+  res.status(NO_CONTENT).end();
 });
 
-module.exports = router;
+module.exports = taskdRouter;

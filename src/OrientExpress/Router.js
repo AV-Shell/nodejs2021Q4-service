@@ -3,44 +3,50 @@ const config = require('../common/config');
 module.exports = class Router {
   constructor() {
     this.endpoints = {};
-    this.middleware = (req, res, next, ...args) => this._middleware(req, res, next, ...args);
+    this.middleware = (req, res, next, ...args) =>
+      this._middleware(req, res, next, ...args);
   }
 
-  parsePath(path) {
-    return { path: path };
-  }
+  // parsePath(path) {
+  //   return { path };
+  // }
 
-  request(method = 'GET', path, handler) {
+  request(path, handler, method = 'GET') {
     if (config?.DEBUG) {
       console.log(`method ${method}, path ${path}, handler: ${handler?.name}`);
     }
-    const parsedPath = this.parsePath(path);
+    const parsedPath = { path };
     if (!this.endpoints[parsedPath.path]) {
       this.endpoints[parsedPath.path] = {};
     }
     const endpoint = this.endpoints[parsedPath.path];
     if (endpoint[method]) {
-      console.error(`Method "${method}" in endpoint "${parsedPath.path}" is already exist`);
-      return;
+      console.error(
+        `Method "${method}" in endpoint "${parsedPath.path}" is already exist`
+      );
     } else {
       endpoint[method] = handler;
       this.requestPaths = Object.keys(this.endpoints);
       if (config?.DEBUG) {
-        console.log(`Object.keys(this.endpoints); method(${method})`, this.requestPaths);
+        console.log(
+          `Object.keys(this.endpoints); method(${method})`,
+          this.requestPaths
+        );
       }
     }
   }
 
-  comparePath(storedPath, incomingPath) {
+  static comparePath(storedPath, incomingPath) {
     if (config?.DEBUG) {
       console.log('storedPath', storedPath);
       console.log('incomingPath', incomingPath);
     }
+
     if (typeof storedPath !== 'string' || typeof incomingPath !== 'string') {
       if (config?.DEBUG) {
         console.log('some path invalid');
       }
-      return;
+      return false;
     }
 
     const splitSP = storedPath?.split('/');
@@ -49,17 +55,19 @@ module.exports = class Router {
       return false;
     }
     const params = {};
-    if (
-      splitSP.every((el, i) => {
-        if (el[0] === ':' && el.length > 1) {
-          params[`${el.slice(1)}`] = splitIP[i];
-          return true;
-        } else if (el === splitIP[i]) {
-          return true;
-        }
-        return false;
-      })
-    ) {
+
+    const isPathCompared = splitSP.every((el, i) => {
+      if (el[0] === ':' && el.length > 1) {
+        params[`${el.slice(1)}`] = splitIP[i];
+        return true;
+      }
+      if (el === splitIP[i]) {
+        return true;
+      }
+      return false;
+    });
+
+    if (isPathCompared) {
       return params;
     }
     return false;
@@ -69,7 +77,7 @@ module.exports = class Router {
     if (config?.DEBUG) {
       console.log('middleware, this.requestPaths', this.requestPaths);
     }
-    const hasRoute = false;
+    // const hasRoute = false;
     let params;
     let midFunc;
 
@@ -77,14 +85,18 @@ module.exports = class Router {
       if (config?.DEBUG) {
         console.log('middleware path find', path);
       }
-      if ((params = this.comparePath(path, req.parsedUrl.pathname))) {
+      params = Router.comparePath(path, req.parsedUrl.pathname);
+      if (params) {
         if (config?.DEBUG) {
           console.log('Yeaaa!!!');
           console.log('params', params);
 
           console.log('method', req.method);
           console.log('this.endpoints[path]', this.endpoints[path]);
-          console.log('this.endpoints[path]?.[req.method]', this.endpoints[path]?.[req.method]);
+          console.log(
+            'this.endpoints[path]?.[req.method]',
+            this.endpoints[path]?.[req.method]
+          );
         }
 
         const mustacheHandler = this.endpoints[path]?.[req.method];
@@ -93,7 +105,7 @@ module.exports = class Router {
           console.log('typeof mustacheHandler', typeof mustacheHandler);
           console.log(
             "(mustacheHandler && typeof mustacheHandler === 'function')",
-            mustacheHandler && typeof mustacheHandler === 'function',
+            mustacheHandler && typeof mustacheHandler === 'function'
           );
         }
         if (mustacheHandler && typeof mustacheHandler === 'function') {
@@ -116,18 +128,18 @@ module.exports = class Router {
   }
 
   get(path, handler) {
-    this.request('GET', path, handler);
+    this.request(path, handler, 'GET');
   }
 
   post(path, handler) {
-    this.request('POST', path, handler);
+    this.request(path, handler, 'POST');
   }
 
   put(path, handler) {
-    this.request('PUT', path, handler);
+    this.request(path, handler, 'PUT');
   }
 
   delete(path, handler) {
-    this.request('DELETE', path, handler);
+    this.request(path, handler, 'DELETE');
   }
 };

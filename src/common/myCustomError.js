@@ -1,5 +1,7 @@
+const { responseCode } = require('./statusCodes');
+
 class MyCustomError extends Error {
-  constructor(message = 'Error', status = 404) {
+  constructor(message = 'Error', status = responseCode.NOT_FOUND) {
     super(message);
     this.myErrStatus = status;
   }

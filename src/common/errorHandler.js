@@ -1,29 +1,31 @@
 const { MyCustomError } = require('./myCustomError');
-const config = require('./config');
-
-const uncaughtExceptionHandler = (err, origin) => {
-  exceptionHandler(err);
-};
-
-const unhandledRejectionHandler = (err, promise) => {
-  exceptionHandler(err);
-};
+const {
+  responseCode: { NOT_FOUND, INTERNAL_SERVER_ERROR },
+} = require('./statusCodes');
 
 function exceptionHandler(err) {
   console.error(err.message);
   process.exit(9);
 }
 
-const errorHandler = (err, req, res) => {
-  if (err instanceof MyCustomError) {
-    res.json(err.message, err.myErrStatus);
-    if (config?.DEBUG) {
-      console.log('custom error, status', err.myErrStatus);
-      console.log('custom error, message', err.message);
-    }
-    return;
-  }
-  res.json('Something wrong', 500);
+const uncaughtExceptionHandler = (err) => {
+  exceptionHandler(err);
 };
 
-module.exports = { errorHandler, uncaughtExceptionHandler, unhandledRejectionHandler };
+const unhandledRejectionHandler = (err) => {
+  exceptionHandler(err);
+};
+
+const errorHandler = (err, req, res) => {
+  if (err instanceof MyCustomError) {
+    res.status(err.myErrStatus ?? NOT_FOUND).send(err.message);
+    return;
+  }
+  res.json('Something wrong', INTERNAL_SERVER_ERROR);
+};
+
+module.exports = {
+  errorHandler,
+  uncaughtExceptionHandler,
+  unhandledRejectionHandler,
+};
