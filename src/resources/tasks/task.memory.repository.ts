@@ -1,10 +1,11 @@
-const DB = require('../../common/inMemoryDB');
-const { MyCustomError } = require('../../common/myCustomError');
-const {
-  responseCode: { NOT_FOUND },
-} = require('../../common/statusCodes');
+import * as DB from '../../common/inMemoryDB';
+import { ITask } from '../../types/interfaces';
+import { responseCode } from '../../common/statusCodes';
+import { MyCustomError } from '../../common/myCustomError';
 
-const getAllByBoardId = async (id) => {
+const { NOT_FOUND } = responseCode;
+
+export const getAllByBoardId = async (id: string): Promise<ITask[]> => {
   const tasks = await DB.getTasksByBoardId(id);
   if (tasks.length === 0) {
     throw new MyCustomError(`The board with id ${id} was not found`, NOT_FOUND);
@@ -12,7 +13,10 @@ const getAllByBoardId = async (id) => {
   return tasks;
 };
 
-const getById = async (boardId, taskId) => {
+export const getById = async (
+  boardId: string,
+  taskId: string
+): Promise<ITask> => {
   const task = await DB.getTaskById(boardId, taskId);
   if (!task) {
     throw new MyCustomError(
@@ -23,9 +27,14 @@ const getById = async (boardId, taskId) => {
   return task;
 };
 
-const create = async (task) => DB.createTask(task);
+export const create = async (task: ITask): Promise<ITask> =>
+  DB.createTask(task);
 
-const update = async (taskData, boardId, taskId) => {
+export const update = async (
+  taskData: Partial<ITask>,
+  boardId: string,
+  taskId: string
+): Promise<ITask> => {
   const task = await DB.updateTask(taskData, boardId, taskId);
   if (!task) {
     throw new MyCustomError(
@@ -36,7 +45,10 @@ const update = async (taskData, boardId, taskId) => {
   return task;
 };
 
-const deleteById = async (boardId, taskId) => {
+export const deleteById = async (
+  boardId: string,
+  taskId: string
+): Promise<ITask> => {
   const task = await DB.deleteTaskById(boardId, taskId);
   if (!task) {
     throw new MyCustomError(
@@ -45,12 +57,4 @@ const deleteById = async (boardId, taskId) => {
     );
   }
   return task;
-};
-
-module.exports = {
-  getAllByBoardId,
-  create,
-  getById,
-  update,
-  deleteById,
 };
