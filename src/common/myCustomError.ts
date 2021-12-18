@@ -1,10 +1,10 @@
-const { responseCode } = require('./statusCodes');
+import { responseCode } from './statusCodes';
 
-class MyCustomError extends Error {
+export class MyCustomError extends Error {
+  readonly myErrStatus: number;
+
   constructor(message = 'Error', status = responseCode.NOT_FOUND) {
     super(message);
     this.myErrStatus = status;
   }
 }
-
-module.exports = { MyCustomError };
