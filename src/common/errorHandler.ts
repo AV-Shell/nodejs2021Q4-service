@@ -1,56 +1,60 @@
 import { NextFunction, Request, Response } from 'express';
 import { MyCustomError } from './myCustomError';
 import { responseCode } from './statusCodes';
-// import { IReq, IRes } from '../OrientExpress/OrientExpress.d';
 
 const { NOT_FOUND, INTERNAL_SERVER_ERROR } = responseCode;
 
+/**
+ * Logs the error and terminates the process
+ * @param err - error to be logged
+ * @returns returns nothing, terminates the program.
+ */
 function exceptionHandler(err: Error): void {
   console.error(err.message);
   process.exit(9);
 }
 
+/**
+ * Callback for uncaught exceptions (errors)
+ * @param err - error to be logged
+ * @returns returns nothing
+ */
 export const uncaughtExceptionHandler = (err: Error): void => {
-  console.log('uncaughtExceptionHandler');
   exceptionHandler(err);
 };
 
+/**
+ * Callback for unhandled rejections (promise reject)
+ * @param err - error to be logged
+ * @returns returns nothing
+ */
 export const unhandledRejectionHandler = (err: Error): void => {
-  console.log('unhandledRejectionHandler');
   exceptionHandler(err);
 };
 
+/**
+ * Middleware for handling errors in express routes
+ * @param err - error to be logged
+ * @param req - express request
+ * @param res - express response
+ * @param next - express next function to call next middlware
+ * @returns returns nothing
+ */
 export const errorHandler = (
   err: Error | MyCustomError,
-  _: Request,
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  console.log('error handler \r\n');
+  console.log('Midleware error handler ');
+  console.log('Request ', req.originalUrl);
+  console.log('error message', err.message);
   if (err instanceof MyCustomError) {
-    console.log('error handler \r\n', err?.myErrStatus);
     res.status(err.myErrStatus ?? NOT_FOUND).send(err.message);
+    console.log('error statuscode ', err.myErrStatus ?? NOT_FOUND);
   } else {
+    console.log('error stack \r\n', err.stack);
     res.status(INTERNAL_SERVER_ERROR).json('Something wrong');
   }
-  next(err);
+  next();
 };
-
-// export const errorHandler = (
-//   err: Error,
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ): void => {
-//   console.log('errorHandler');
-//   if (err instanceof MyCustomError) {
-//     console.log('errorHandler');
-//     console.log(err, req, err.myErrStatus);
-//     res.status(err.myErrStatus ?? NOT_FOUND).send(err.message);
-//     return;
-//   }
-//   console.log('errorHandler');
-//   console.log(err, req, 500);
-//   res.status(INTERNAL_SERVER_ERROR).send('Something wrong');
-//   next(err);
-// };
