@@ -27,6 +27,9 @@
     "linebreak-style": "off",
     "node/no-unsupported-features/es-syntax": "off",
     "no-underscore-dangle": "off",
+    "no-await-in-loop": "off",
+    "no-plusplus": "off",
+    "no-console": "off",
     "import/prefer-default-export": "off"
   }
 }

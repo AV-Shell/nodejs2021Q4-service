@@ -1,24 +1,23 @@
-const express = require('express');
-const swaggerUI = require('swagger-ui-express');
-const path = require('path');
-const YAML = require('yamljs');
+const {
+  errorHandler,
+  uncaughtExceptionHandler,
+  unhandledRejectionHandler,
+} = require('./common/errorHandler');
+const OrientExpress = require('./OrientExpress/OrientExpress');
 const userRouter = require('./resources/users/user.router');
+const boardRouter = require('./resources/boards/board.router');
+const taskRouter = require('./resources/tasks/task.router');
 
-const app = express();
-const swaggerDocument = YAML.load(path.join(__dirname, '../doc/api.yaml'));
+process.on('uncaughtException', uncaughtExceptionHandler);
+process.on('unhandledRejection', unhandledRejectionHandler);
 
-app.use(express.json());
+const app = new OrientExpress();
+app.setErrorHandler(errorHandler);
 
-app.use('/doc', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
+app.use(OrientExpress.bodyParser);
 
-app.use('/', (req, res, next) => {
-  if (req.originalUrl === '/') {
-    res.send('Service is running!');
-    return;
-  }
-  next();
-});
-
-app.use('/users', userRouter);
+app.use(userRouter.middleware);
+app.use(boardRouter.middleware);
+app.use(taskRouter.middleware);
 
 module.exports = app;
