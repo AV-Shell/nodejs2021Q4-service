@@ -15,7 +15,6 @@ const app = new OrientExpress();
 app.setErrorHandler(errorHandler);
 
 app.use(OrientExpress.bodyParser);
-
 app.use(userRouter.middleware);
 app.use(boardRouter.middleware);
 app.use(taskRouter.middleware);
