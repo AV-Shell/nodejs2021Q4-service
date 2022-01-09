@@ -51,6 +51,8 @@ module.exports = {
     'import/prefer-default-export': 'off',
     'tsdoc/syntax': 'warn',
     '@typescript-eslint/no-explicit-any': ['error'],
+    'no-shadow': 'off',
+    '@typescript-eslint/no-shadow': 'error',
     'lines-between-class-members': 'off',
   },
 };
