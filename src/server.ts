@@ -14,5 +14,5 @@ logger.log('silly', 'silly level log test');
 // Promise.reject(Error('Oops!'));
 
 app.listen(config.PORT, () =>
-  console.log(`App is running on http://localhost:${config.PORT}`)
+  logger.log('warn', `App is running on http://localhost:${config.PORT}`)
 );
