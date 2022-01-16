@@ -1,5 +1,5 @@
 import express from 'express';
-import Task from './task.model';
+import { Task } from '../../entity/Task';
 import * as tasksService from './task.service';
 import { responseCode } from '../../common/statusCodes';
 
@@ -14,7 +14,7 @@ interface IRequestExt extends express.Request {
 interface IRequestExt2 extends express.Request {
   params: {
     boardId: string;
-    taskId: string;
+    id: string;
   };
 }
 
@@ -47,19 +47,16 @@ router.route('/').post(async (req: IRequestExt, res, next) => {
   }
 });
 
-router.route('/:taskId').get(async (req: IRequestExt2, res, next) => {
+router.route('/:id').get(async (req: IRequestExt2, res, next) => {
   try {
-    const task = await tasksService.getById(
-      req.params.boardId,
-      req.params.taskId
-    );
+    const task = await tasksService.getById(req.params.boardId, req.params.id);
     res.status(OK).json(Task.toResponse(task));
   } catch (error) {
     next(error);
   }
 });
 
-router.route('/:taskId').put(async (req: IRequestExt2, res, next) => {
+router.route('/:id').put(async (req: IRequestExt2, res, next) => {
   try {
     const task = await tasksService.update(
       new Task({
@@ -71,7 +68,7 @@ router.route('/:taskId').put(async (req: IRequestExt2, res, next) => {
         columnId: req.body.columnId,
       }),
       req.params.boardId,
-      req.params.taskId
+      req.params.id
     );
     res.status(OK).json(Task.toResponse(task));
   } catch (error) {
@@ -79,9 +76,9 @@ router.route('/:taskId').put(async (req: IRequestExt2, res, next) => {
   }
 });
 
-router.route('/:taskId').delete(async (req: IRequestExt2, res, next) => {
+router.route('/:id').delete(async (req: IRequestExt2, res, next) => {
   try {
-    await tasksService.deleteById(req.params.boardId, req.params.taskId);
+    await tasksService.deleteById(req.params.boardId, req.params.id);
     res.status(NO_CONTENT).send('The task has been deleted');
   } catch (error) {
     next(error);
