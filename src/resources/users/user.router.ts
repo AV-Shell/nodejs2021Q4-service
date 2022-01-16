@@ -1,5 +1,5 @@
 import express from 'express';
-import User from './user.model';
+import { User } from '../../entity/User';
 import * as usersService from './user.service';
 import { responseCode } from '../../common/statusCodes';
 
