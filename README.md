@@ -8,8 +8,15 @@
 ## Downloading
 
 ```
-git clone {repository URL}
+git clone https://github.com/AV-Shell/nodejs2021Q4-service.git
 ```
+
+## Change branch to task-7-docker-basics 
+
+```
+git checkout task-7-docker-basics 
+```
+
 
 ## Installing NPM modules
 
@@ -25,7 +32,32 @@ npm start
 
 After you enter this command  server will start the app on port from .env (4000 as default if you not set this port in .env)
 
+## Running application in docker: 
+
+ 1) Download and install [Docker](https://docs.docker.com/engine/install/)
+
+ 2) Run in terminal next command : 
+
+```
+docker-compose up
+```
+## Stop app in docker:
+
+ 1) Run in terminal next command : 
+
+```
+docker-compose down
+```
+
 ## Testing
+
+Before starting test you need install npm packages
+
+open new terminal and enter:
+
+```
+npm install
+```
 
 After application running open new terminal and enter:
 
