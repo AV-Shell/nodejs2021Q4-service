@@ -1,5 +1,5 @@
 import express from 'express';
-import Board from './board.model';
+import { Board } from '../../entity/Board';
 import { responseCode } from '../../common/statusCodes';
 import * as boardsService from './board.service';
 
