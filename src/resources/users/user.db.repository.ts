@@ -1,7 +1,6 @@
 import { getRepository } from 'typeorm';
 import { User } from '../../entity/User';
 import { MyCustomError } from '../../common/myCustomError';
-import { unassignTaskByUserId } from '../tasks/task.db.repository';
 
 export const getAll = async (): Promise<User[]> => {
   const userTypeormRepo = getRepository(User);
@@ -43,7 +42,6 @@ export const deleteById = async (id: string): Promise<User> => {
   if (!user) {
     throw new MyCustomError(`The user with id ${id} was not found`, 404);
   }
-  await unassignTaskByUserId(id);
   await userTypeormRepo.delete(id);
   return user;
 };

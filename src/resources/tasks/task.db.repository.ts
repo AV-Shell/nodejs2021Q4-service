@@ -1,10 +1,13 @@
-import { DeleteResult, getRepository } from 'typeorm';
+import { getRepository } from 'typeorm';
 import { Task } from '../../entity/Task';
 import { MyCustomError } from '../../common/myCustomError';
 
 export const getAllByBoardId = async (boardId: string): Promise<Task[]> => {
   const taskTypeormRepo = getRepository(Task);
-  const tasks = await taskTypeormRepo.find({ where: { boardId } });
+  const tasks = await taskTypeormRepo.find({
+    where: { boardId },
+    loadRelationIds: true,
+  });
   if (tasks.length === 0) {
     throw new MyCustomError(`The board with id ${boardId} was not found`, 404);
   }
@@ -13,7 +16,7 @@ export const getAllByBoardId = async (boardId: string): Promise<Task[]> => {
 
 export const getById = async (boardId: string, id: string): Promise<Task> => {
   const taskTypeormRepo = getRepository(Task);
-  const task = await taskTypeormRepo.findOne(id);
+  const task = await taskTypeormRepo.findOne(id, { loadRelationIds: true });
   if (!task) {
     throw new MyCustomError(
       `The task with boardId ${boardId} and id ${id} was not found`,
@@ -36,22 +39,13 @@ export const update = async (
 ): Promise<Task> => {
   const taskTypeormRepo = getRepository(Task);
   const task = await taskTypeormRepo.findOne(id);
-  // const task = await DB.updateTask(taskData, boardId, id);
   if (!task) {
     throw new MyCustomError(
       `The task with boardId ${boardId} and id ${id} was not found`,
       404
     );
   }
-  console.log('task', task);
-  console.log('taskData', taskData);
-  console.log('id', id);
-  console.log('boardId', boardId);
-  console.log('resultObj', { ...task, ...taskData, id, boardId });
-
-  const at = await taskTypeormRepo.save({ ...task, ...taskData, id, boardId });
-  console.log('at', at);
-  return at;
+  return taskTypeormRepo.save({ ...task, ...taskData, id, boardId });
 };
 
 export const deleteById = async (
@@ -68,23 +62,4 @@ export const deleteById = async (
   }
   await taskTypeormRepo.delete(id);
   return task;
-};
-
-export const unassignTaskByUserId = async (userId: string): Promise<Task[]> => {
-  const taskTypeormRepo = getRepository(Task);
-  const tasks = await taskTypeormRepo.find({ where: { userId } });
-  return Promise.all(
-    tasks.map((el) => {
-      el.userId = null;
-      return taskTypeormRepo.save(el);
-    })
-  );
-};
-
-export const deleteTaskByBoardId = async (
-  boardId: string
-): Promise<DeleteResult[]> => {
-  const taskTypeormRepo = getRepository(Task);
-  const tasks = await taskTypeormRepo.find({ where: { boardId } });
-  return Promise.all(tasks.map((el) => taskTypeormRepo.delete(el)));
 };

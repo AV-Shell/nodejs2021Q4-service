@@ -1,7 +1,6 @@
 import { getRepository } from 'typeorm';
 import { Board } from '../../entity/Board';
 import { MyCustomError } from '../../common/myCustomError';
-import { deleteTaskByBoardId } from '../tasks/task.db.repository';
 
 export const getAll = async (): Promise<Board[]> => {
   const boardTypeormRepo = getRepository(Board);
@@ -43,6 +42,5 @@ export const deleteById = async (id: string): Promise<Board> => {
     throw new MyCustomError(`The board with id ${id} was not found`, 404);
   }
   await boardTypeormRepo.delete(id);
-  await deleteTaskByBoardId(id);
   return board;
 };

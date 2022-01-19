@@ -1,5 +1,13 @@
 import { v4 as uuidv4 } from 'uuid';
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
+import { User } from './User';
+import { Board } from './Board';
 
 @Entity('tasks')
 export class Task {
@@ -24,19 +32,23 @@ export class Task {
   })
   description: string;
 
-  @Column({
-    type: 'varchar',
+  @ManyToOne(() => Board, (board) => board.id, {
     nullable: true,
-    default: null,
+    onDelete: 'CASCADE',
   })
-  userId: string | null;
-
-  @Column({
-    type: 'varchar',
-    nullable: true,
-    default: null,
+  @JoinColumn({
+    name: 'boardId',
   })
   boardId: string | null;
+
+  @ManyToOne(() => User, (user) => user.id, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
+  @JoinColumn({
+    name: 'userId',
+  })
+  userId: string | null;
 
   @Column({
     type: 'varchar',
