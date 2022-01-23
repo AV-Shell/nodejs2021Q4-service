@@ -3,6 +3,8 @@ import express from 'express';
 import userRouter from './resources/users/user.router';
 import boardRouter from './resources/boards/board.router';
 import taskRouter from './resources/tasks/task.router';
+import { router as loginRouter } from './resources/login/login.router';
+import { checkTokenMiddleware } from './common/checkToken';
 import { myLoggerReq } from './common/logHandler';
 import {
   errorHandler,
@@ -19,6 +21,10 @@ const app = express();
 app.use(express.json());
 
 app.use(myLoggerReq);
+
+app.use('/login', loginRouter);
+
+app.use(checkTokenMiddleware);
 
 app.use('/users', userRouter);
 
