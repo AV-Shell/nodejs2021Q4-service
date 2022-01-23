@@ -22,6 +22,22 @@ app.use(express.json());
 
 app.use(myLoggerReq);
 
+app.use('/', (req, res, next) => {
+  if (req.originalUrl === '/') {
+    res.send('Service is running!');
+    return;
+  }
+  next();
+});
+
+app.use('/doc', (req, res, next) => {
+  if (req.originalUrl === '/doc') {
+    res.send('Doc is depricated. Route for crosscheck');
+    return;
+  }
+  next();
+});
+
 app.use('/login', loginRouter);
 
 app.use(checkTokenMiddleware);
