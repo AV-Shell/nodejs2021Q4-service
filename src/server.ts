@@ -12,6 +12,8 @@ logger.log('verbose', 'verbose level log test');
 logger.log('debug', 'debug level log test');
 logger.log('silly', 'silly level log test');
 
+logger.log('silly', 'Task9 Authentication & JWT');
+
 createConnection(configTypeOrm)
   .then(async (connection) => {
     if (connection.isConnected) {
