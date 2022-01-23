@@ -1,25 +1,25 @@
-import { IUser } from '../../types/interfaces';
-import * as usersRepo from './user.memory.repository';
+import { User } from '../../entity/User';
+import * as usersRepo from './user.db.repository';
 
 /**
  * Queries all users and returns them
  * @returns Promise object represents the array of all user's oblects
  */
-export const getAll = (): Promise<IUser[]> => usersRepo.getAll();
+export const getAll = (): Promise<User[]> => usersRepo.getAll();
 
 /**
  * Querie user from the database by userId and return it
  * @param id - The user id
  * @returns Promise object represents the user's oblect
  */
-export const getById = (id: string): Promise<IUser> => usersRepo.getById(id);
+export const getById = (id: string): Promise<User> => usersRepo.getById(id);
 
 /**
  * Creates a user in the database
  * @param user - The user object
  * @returns Promise object represents the created user's oblect
  */
-export const create = (user: IUser): Promise<IUser> => usersRepo.create(user);
+export const create = (user: User): Promise<User> => usersRepo.create(user);
 
 /**
  * Update a user in the database
@@ -27,7 +27,7 @@ export const create = (user: IUser): Promise<IUser> => usersRepo.create(user);
  * @param id - The user id
  * @returns Promise object represents the updated user's object.
  */
-export const update = (user: Partial<IUser>, id: string): Promise<IUser> =>
+export const update = (user: Partial<User>, id: string): Promise<User> =>
   usersRepo.update(user, id);
 
 /**
@@ -35,5 +35,5 @@ export const update = (user: Partial<IUser>, id: string): Promise<IUser> =>
  * @param id - The user id
  * @returns Promise object represents the deleted user's object.
  */
-export const deleteById = (id: string): Promise<IUser> =>
+export const deleteById = (id: string): Promise<User> =>
   usersRepo.deleteById(id);

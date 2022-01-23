@@ -14,6 +14,11 @@ interface IConfig {
   AUTH_MODE: boolean;
   FILE_LOG_LEVEL: number;
   CONSOLE_LOG_LEVEL: number;
+  POSTGRES_HOST: string;
+  POSTGRES_PORT: number;
+  POSTGRES_USER: string;
+  POSTGRES_DB: string;
+  POSTGRES_PASSWORD: string;
 }
 
 // interface ILogLevels {
@@ -57,4 +62,9 @@ export const config: IConfig = {
     consoleLogLevel >= ELogLevel.off && consoleLogLevel <= ELogLevel.silly
       ? consoleLogLevel
       : ELogLevel.off,
+  POSTGRES_HOST: process.env.POSTGRES_HOST ?? 'localhost',
+  POSTGRES_PORT: +(process.env.POSTGRES_PORT ?? 5432),
+  POSTGRES_USER: process.env.POSTGRES_USER ?? 'postgres_user',
+  POSTGRES_DB: process.env.POSTGRES_DB ?? 'postgres_db',
+  POSTGRES_PASSWORD: process.env.POSTGRES_PASSWORD ?? 'postgres_password',
 };

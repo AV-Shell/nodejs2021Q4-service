@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import express from 'express';
 import userRouter from './resources/users/user.router';
 import boardRouter from './resources/boards/board.router';

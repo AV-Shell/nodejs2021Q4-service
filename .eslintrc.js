@@ -38,6 +38,7 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',
   ],
+  ignorePatterns: ['**/migration/*.ts'],
   rules: {
     'import/extensions': 'off',
     'linebreak-style': 'off',
