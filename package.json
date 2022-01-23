@@ -48,10 +48,11 @@
     ]
   },
   "dependencies": {
-    "@types/uuid": "^8.3.3",
+    "bcrypt": "^5.0.1",
     "cross-env": "7.0.3",
     "dotenv": "10.0.0",
     "express": "^4.17.2",
+    "jsonwebtoken": "^8.5.1",
     "pg": "^8.7.1",
     "reflect-metadata": "^0.1.13",
     "typeorm": "^0.2.41",
@@ -59,7 +60,10 @@
     "winston": "^3.3.3"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
     "@types/express": "^4.17.13",
+    "@types/jsonwebtoken": "^8.5.8",
+    "@types/uuid": "^8.3.3",
     "@typescript-eslint/eslint-plugin": "5.5.0",
     "@typescript-eslint/parser": "5.5.0",
     "chai": "4.3.4",
