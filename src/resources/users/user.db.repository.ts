@@ -45,3 +45,8 @@ export const deleteById = async (id: string): Promise<User> => {
   await userTypeormRepo.delete(id);
   return user;
 };
+
+export const getByLogin = async (login: string): Promise<User | undefined> => {
+  const taskTypeormRepo = getRepository(User);
+  return taskTypeormRepo.findOne({ where: { login } });
+};

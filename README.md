@@ -11,10 +11,10 @@
 git clone https://github.com/AV-Shell/nodejs2021Q4-service.git
 ```
 
-## Change branch to task-7-docker-basics 
+## Change branch to task9-authentication-and-jwt 
 
 ```
-git checkout task8-postgreSQL-and-typeorm
+git checkout task9-authentication-and-jwt
 ```
 
 

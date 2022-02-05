@@ -10,6 +10,7 @@ interface IConfig {
   DEBUG: boolean;
   NODE_ENV: string;
   MONGO_CONNECTION_STRING: string;
+  HASH_SECRET: string;
   JWT_SECRET_KEY: string;
   AUTH_MODE: boolean;
   FILE_LOG_LEVEL: number;
@@ -19,6 +20,8 @@ interface IConfig {
   POSTGRES_USER: string;
   POSTGRES_DB: string;
   POSTGRES_PASSWORD: string;
+  PATH_WHITELIST: Array<string>;
+  SALT_ROUNDS: number;
 }
 
 // interface ILogLevels {
@@ -46,6 +49,8 @@ export enum ELogLevel {
 
 const fileLogLevel = +(process?.env?.FILE_LOG_LEVEL ?? 0);
 const consoleLogLevel = +(process.env?.CONSOLE_LOG_LEVEL ?? 0);
+const PATH_WHITELIST = ['/doc', '/login'];
+const SALT_ROUNDS = 10;
 
 export const config: IConfig = {
   PORT: +(process.env.PORT ?? 4000),
@@ -53,6 +58,7 @@ export const config: IConfig = {
   NODE_ENV: process.env.NODE_ENV ?? '',
   MONGO_CONNECTION_STRING: process.env.MONGO_CONNECTION_STRING ?? '',
   JWT_SECRET_KEY: process.env.JWT_SECRET_KEY ?? '',
+  HASH_SECRET: process.env.HASH_SECRET ?? '',
   AUTH_MODE: process.env.AUTH_MODE === 'true' ?? '',
   FILE_LOG_LEVEL:
     fileLogLevel >= ELogLevel.off && fileLogLevel <= ELogLevel.silly
@@ -67,4 +73,6 @@ export const config: IConfig = {
   POSTGRES_USER: process.env.POSTGRES_USER ?? 'postgres_user',
   POSTGRES_DB: process.env.POSTGRES_DB ?? 'postgres_db',
   POSTGRES_PASSWORD: process.env.POSTGRES_PASSWORD ?? 'postgres_password',
+  PATH_WHITELIST,
+  SALT_ROUNDS,
 };

@@ -1,5 +1,6 @@
 import { User } from '../../entity/User';
 import * as usersRepo from './user.db.repository';
+import { hashParam } from '../../common/hashHelper';
 
 /**
  * Queries all users and returns them
@@ -19,7 +20,12 @@ export const getById = (id: string): Promise<User> => usersRepo.getById(id);
  * @param user - The user object
  * @returns Promise object represents the created user's oblect
  */
-export const create = (user: User): Promise<User> => usersRepo.create(user);
+// export const create = (user: User): Promise<User> => usersRepo.create(user);
+export const create = async (user: User): Promise<User> => {
+  const { password } = user;
+  user.password = await hashParam(password);
+  return usersRepo.create(user);
+};
 
 /**
  * Update a user in the database
@@ -27,8 +33,18 @@ export const create = (user: User): Promise<User> => usersRepo.create(user);
  * @param id - The user id
  * @returns Promise object represents the updated user's object.
  */
-export const update = (user: Partial<User>, id: string): Promise<User> =>
-  usersRepo.update(user, id);
+// export const update = (user: Partial<User>, id: string): Promise<User> =>
+//   usersRepo.update(user, id);
+export const update = async (
+  user: Partial<User>,
+  id: string
+): Promise<User> => {
+  const { password } = user;
+  if (password) {
+    user.password = await hashParam(password);
+  }
+  return usersRepo.update(user, id);
+};
 
 /**
  * Delete the user from the database
