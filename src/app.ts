@@ -22,6 +22,8 @@ app.use(express.json());
 
 app.use(myLoggerReq);
 
+console.log('task10');
+
 app.use('/', (req, res, next) => {
   if (req.originalUrl === '/') {
     res.send('Service is running!');
