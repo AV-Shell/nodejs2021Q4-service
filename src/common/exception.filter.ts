@@ -16,11 +16,10 @@ export class MyExceptionFilter implements ExceptionFilter {
     let status;
     let message;
     let reason;
-
     try {
       status = exception.getStatus();
       message = exception?.message?.error || exception?.message || ' :(';
-      reason = 'may be I ... may be You ...';
+      reason = exception?.messages || 'may be I ... may be You ...';
     } catch {
       status = HttpStatus.INTERNAL_SERVER_ERROR;
       message = 'something went wrong';

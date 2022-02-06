@@ -10,6 +10,7 @@ import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { MyExceptionFilter } from './common/exception.filter';
 import { LoggingInterceptor } from './common/logging.interceptor';
 import { LoggerMiddleware } from './common/logger.middleware';
+import { FilesModule } from './files/files.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { LoggerMiddleware } from './common/logger.middleware';
     BoardsModule,
     TasksModule,
     LoginModule,
+    FilesModule,
   ],
   controllers: [],
   providers: [

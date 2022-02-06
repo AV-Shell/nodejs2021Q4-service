@@ -1,6 +1,11 @@
 import { IColumn } from 'src/common/Column';
+import { IsString, IsOptional, IsArray } from 'class-validator';
 
 export class CreateBoardDto {
+  @IsString()
   readonly title: string;
-  readonly columns: IColumn[];
+
+  @IsOptional()
+  @IsArray()
+  readonly columns?: IColumn[];
 }

@@ -11,6 +11,7 @@ import {
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/login/jwt-login.guard';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { ResponceUserDto } from './dto/responce-user.dto';
 import { User } from './users.entity';
 import { UsersService } from './users.service';
@@ -48,7 +49,7 @@ export class UsersController {
   @ApiResponse({ status: 201, type: User })
   @UseGuards(JwtAuthGuard)
   @Put(':id')
-  updateUser(@Param() id: string, @Body() userDto: Partial<CreateUserDto>) {
+  updateUser(@Param() id: string, @Body() userDto: UpdateUserDto) {
     return this.usersService.update(id, userDto);
   }
 
