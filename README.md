@@ -96,3 +96,66 @@ npm run lint
 Press <kbd>F5</kbd> to debug.
 
 For more information, visit: https://code.visualstudio.com/docs/editor/debugging
+
+
+# Load TESTING Artillery
+
+Load testing on a virtual machine with a database in docker is a heavenly delight. Testing for more than 10 seconds results in a hang. Therefore, here are the results for testing one endpoint under 10 seconds.
+
+
+Fastify
+All virtual users finished
+Summary report @ 03:00:25(+0300) 2021-07-10
+  Scenarios launched:  60
+  Scenarios completed: 60
+  Requests completed:  120
+  Mean response/sec: 6.86
+  Response time (msec):
+    min: 1
+    max: 151
+    median: 63
+    p95: 115
+    p99: 130.7
+  Scenario counts:
+    lost the time: 60 (100%)
+  Codes:
+    200: 60
+    201: 60  
+
+
+express 
+All virtual users finished
+Summary report @ 03:08:57(+0300) 2021-07-10
+  Scenarios launched:  60
+  Scenarios completed: 60
+  Requests completed:  120
+  Mean response/sec: 6.85
+  Response time (msec):
+    min: 2
+    max: 167
+    median: 55
+    p95: 118
+    p99: 160
+  Scenario counts:
+    lost the time: 60 (100%)
+  Codes:
+    200: 60
+    201: 60
+
+
+
+    # Express
+|              |                                  |                                      |
+|--------------|----------------------------------|-----------------------------------------------------------------------------------------|
+| Requests     | [total]                          | 120.
+| Response    | [min, mean, median, p95 p99, max] | 2µs, 55µs, 55µs, 118µs, 160µs, 167µs |
+| Success      | [ratio]                          | 100.00%                              |
+| Status Codes | [code:count]                     | 200: 60  201: 60                     |
+
+# Fastify
+|              |                                  |                                      |
+|--------------|----------------------------------|-----------------------------------------------------------------------------------------|
+| Requests     | [total]                          | 120.
+| Response    | [min, mean, median, p95 p99, max] | 1µs, 63µs, 55µs, 115µs, 130µs, 151µs |
+| Success      | [ratio]                          | 100.00%                              |
+| Status Codes | [code:count]                     | 200: 60  201: 60                     |
