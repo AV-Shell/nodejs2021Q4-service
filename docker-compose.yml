@@ -1,24 +1,6 @@
 version: '3'
 services:
-  noda: 
-    container_name: noda
-    build:
-        context: .
-    env_file:
-      - .env
-    volumes:
-      - ./logs:/usr/src/app/logs
-      - ./src:/usr/src/app/src
-    ports:
-      - ${PORT}:${PORT}
-    depends_on:
-      - task10postgres
-    restart: always
-    environment:
-      - PORT=${PORT}
-    command: npm run start:dev
-  task10postgres:
-    container_name: task10postgres
+  postgres:
     build: ./db/
     image: avshell/postgres2021q4
     ports:
